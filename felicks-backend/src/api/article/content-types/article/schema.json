@@ -16,6 +16,13 @@
     "summary": {
       "type": "text"
     },
+    "description": {
+      "type": "blocks"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
     "image": {
       "allowedTypes": [
         "images",
@@ -25,13 +32,6 @@
       ],
       "type": "media",
       "multiple": true
-    },
-    "description": {
-      "type": "blocks"
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "title"
     },
     "category": {
       "type": "relation",
