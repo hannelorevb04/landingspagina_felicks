@@ -1,4 +1,4 @@
-const STRAPI_URL = "http://localhost:1337";
+const STRAPI_URL = "https://landingspagina-felicks.onrender.com";
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
 

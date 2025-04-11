@@ -1,5 +1,5 @@
 
-const STRAPI_URL = 'http://localhost:1337'; 
+const STRAPI_URL = 'https://landingspagina-felicks.onrender.com'; 
 
 
 const categoryButtons = document.getElementById('categoryButtons');
