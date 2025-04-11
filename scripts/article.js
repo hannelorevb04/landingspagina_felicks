@@ -46,7 +46,7 @@ async function loadArticle() {
     
 
 
-    const article = articleData;
+    const article = articleData.attributes;
 
     titleEl.textContent = article.title;
 
