@@ -4,13 +4,7 @@
     <loc>https://felicks.be/</loc>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://felicks.be/index.html</loc>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://felicks.be/spliturl.html</loc>
-  </url>
+
   <url>
     <loc>https://felicks.be/tips.html</loc>
   </url>
