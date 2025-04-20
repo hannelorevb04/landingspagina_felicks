@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://felicks.be/</loc>
+    <loc>https://www.felicks.be/</loc>
     <priority>1.0</priority>
   </url>
-
   <url>
-    <loc>https://felicks.be/tips.html</loc>
+    <loc>https://www.felicks.be/tips.html</loc>
   </url>
   <url>
-    <loc>https://felicks.be/article.html</loc>
+    <loc>https://www.felicks.be/article.html</loc>
   </url>
 </urlset>
