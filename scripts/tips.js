@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.classList.add('active');
   }
 
-  // je bestaande click‐handlers blijven ongewijzigd
   const buttons = document.querySelectorAll('.category-button');
   buttons.forEach(button => {
     button.addEventListener('click', () => {
@@ -43,6 +42,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Zorgt voor hidden/showing van download onderaan
+const downloadSection = document.getElementById('Download');
+
+function updateDownloadVisibility() {
+  if (activeCategory) {
+    downloadSection.classList.remove('downloadhidden');
+  } else {
+    downloadSection.classList.add('downloadhidden');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateDownloadVisibility();
+});
+
+
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    updateDownloadVisibility();
+  });
+});
+
 });
 
 
