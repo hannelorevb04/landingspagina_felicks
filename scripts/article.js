@@ -46,6 +46,8 @@ async function loadArticle() {
     titleEl.textContent = article.title || "Geen titel";
     summaryEl.textContent = article.summary || "Geen samenvatting";
 
+    
+
     console.log("🧪 Afbeeldingsdata = ", article.image);
 
     // Afbeelding
@@ -65,7 +67,6 @@ imageEl.alt = imageAlt;
     
 
     if (Array.isArray(article.description)) {
-      // description is rich text (json blocks)
       descEl.innerHTML = article.description.map(block => {
         if (block.type === "paragraph") {
           return `<p>${block.children.map(child => child.text).join("")}</p>`;
@@ -78,7 +79,6 @@ imageEl.alt = imageAlt;
         return "";
       }).join("");
     } else {
-      // description is plain HTML string
       descEl.innerHTML = article.description || "<p>Geen beschrijving beschikbaar.</p>";
     }
 
@@ -89,6 +89,8 @@ imageEl.alt = imageAlt;
     console.error("Fout bij laden artikel:", error);
     titleEl.textContent = "Er ging iets mis bij het ophalen van het artikel.";
   }
+
+  
 }
 
 document.addEventListener("DOMContentLoaded", loadArticle);

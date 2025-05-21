@@ -57,6 +57,13 @@ body {
 
 }
 
+.download{
+  background-color: #FFD87E;
+  padding: 8px 22px;
+  border-radius: 25px;
+  margin-top: -10px;
+}
+
 .mobile-menu a {
   text-decoration: none;
   color: #183A36;
@@ -256,7 +263,7 @@ body {
 /*----------------------------------------------------------------*/
 
 .tips-section {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
 
   text-align: center;
 }
@@ -270,7 +277,7 @@ body {
 }
 
 .tip-card {
-  background-color: rgba(255, 216, 125, 0.25);
+  background-color: #FFD87E;
   border-radius: 15px;
   width: 170px;
   height: 125px;
@@ -365,7 +372,7 @@ body {
 
 .donation-button {
   display: inline-block;
-  background-color: #FFD87D;
+  background-color: #FFD87E;
   padding: 14px 48px;
   border-radius: 25px;
   font-family: 'Nunito', sans-serif;
@@ -644,7 +651,6 @@ body {
 
   /*----------------------------------------------------------------*/
   .tips-section {
-    padding: 4rem 2rem;
     text-align: center;
   }
 

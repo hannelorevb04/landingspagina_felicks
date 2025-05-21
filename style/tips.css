@@ -1,60 +1,56 @@
 
 body {
-
-    margin: 0;
+  margin: 0;
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
   background-color: #FFFDF9;
-  color: #183a36;
+  color: #183A36;
   line-height: 1.4;
+}
 
-  }
-  
-  /* ---------------------------------------------------------------------------------------------------------------------- */
-  #categoryButtons {
-    margin-top: 7rem;
-    margin-bottom: 3rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: center;
-    
-  }
-  
-  .category-button {
-    background-color: rgba(241, 139, 126, 0.6);
-    color: #183a36;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 0.5rem 1.2rem;
-    border-radius: 9999px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .category-button.active {
-    background-color: #f08b80;
-  }
+/* ---------------------------------------------------------------------------------------------------------------------- */
+#categoryButtons {
+  margin-top: 7rem;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
 
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  /* ---------------------------------------------------------------------------------------------------------------------- */
+}
 
-  .tips{
-    margin: 20px 24px;
-  }
-  .section-title {
-    font-size: 24px;
-    font-family: sirenia, sans-serif;
-    font-weight: 600;
-    font-style: normal;
-    
-  }
+.category-button {
+  background-color: rgba(241, 139, 126, 0.6);
+  color: #183A36;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.category-button.active {
+  background-color: #f08b80;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------------- */
+.tips {
+  margin: 20px 24px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-family: sirenia, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
 
 .articles-list {
   display: flex;
@@ -69,7 +65,8 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  /* Schaduw aangepast naar donkergroen */
+  box-shadow: 0 6px 18px rgba(24, 58, 54, 0.05);
   padding-bottom: 1rem;
   text-align: center;
 }
@@ -84,10 +81,11 @@ body {
   padding-top: 1rem;
 }
 
-.summary{
+.summary {
   text-align: left;
   margin-left: 12px;
 }
+
 .article-image {
   width: 100%;
   height: auto;
@@ -97,20 +95,17 @@ body {
   border-top-right-radius: 16px;
 }
 
-
 .mobile-only {
   display: block;
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
   background-color: #f08b80;
-  
   font-weight: bold;
-  font-size: 0.75rem;
+  font-size: 15px;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
 }
-
 
 .tablet-only {
   display: none;
@@ -128,50 +123,37 @@ body {
   font-size: 20px;
   font-weight: 600;
   font-family: 'Sirenia', serif;
-  color: #183a36;
+  color: #183A36;
   margin: 0;
 }
 
-.article-content .summary {
-  font-size: 0.95rem;
-  color: #333;
-  line-height: 1.4;
-}
-
 .read-more {
-  color: #183a36;
+  color: #183A36;
   font-weight: bold;
-  font-size: 0.85rem;
+  font-size: 16px;
   text-align: center;
   text-decoration: underline;
   align-items: center;
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
-
 @media screen and (min-width: 725px) {
-  
   #categoryButtons {
     margin-top: 9rem;
     margin-bottom: 4rem;
-    
-    
   }
-  /* ---------------------------------------------------------------------------------------------------------------------- */
+
   .article-card {
-   align-items: center;
-   text-align: center;
-    width: 600px; 
+    align-items: center;
+    text-align: center;
+    width: 600px;
     margin: 0 auto;
   }
 
   .section-title {
     font-size: 36px;
     margin-left: 36px;
-    
-    
   }
-
 
   .mobile-only {
     display: none;
@@ -186,26 +168,24 @@ body {
 
   .tablet-only {
     display: inline-block;
-  
-  background-color: #f08b80;
-  
-  font-weight: bold;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
+    background-color: #f08b80;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
   }
 
   .article-content {
     max-width: 400px;
-    
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .summary{
+  .summary {
     text-align: left;
   }
+
   .article-image {
     width: auto;
     max-width: 300px;
@@ -219,41 +199,33 @@ body {
     font-size: 24px;
     margin-top: 26px;
   }
-  
-  
-  
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 @media screen and (min-width: 1100px) {
+  body p {
+    font-size: 18px;
+  }
+
   #categoryButtons {
     margin-top: 11rem;
     margin-bottom: 5rem;
     gap: 1.2rem;
-    
   }
 
   .category-button {
-    
     font-size: 20px;
     padding: 0.7rem 1.8rem;
-    
-    
-   
   }
-  /* ---------------------------------------------------------------------------------------------------------------------- */
+
   .section-title {
-    
     margin-left: 10%;
-    
   }
-  
-  
+
   .articles-list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 3rem;
-   
     margin: 0 auto;
     margin-bottom: 6.5em;
   }
@@ -289,26 +261,21 @@ body {
     flex-direction: column;
     justify-content: space-between;
     max-width: 650px;
-    
   }
 
-  .article-content p {
+  .tablet-only {
     font-size: 18px;
   }
 
-.tablet-only{
-  font-size: 16px;
-}
-
-.read-more{
-  font-size: 16px;
-}
+  .read-more {
+    font-size: 18px;
+  }
 
   .article-content h3 {
     font-size: 32px;
     font-weight: 600;
     font-family: 'Sirenia', serif;
-    color: #183a36;
+    color: #183A36;
     margin: 0;
   }
 
@@ -318,11 +285,4 @@ body {
     align-items: center;
     font-size: 16px;
   }
-
-  
-
-  
-  
 }
-
-  
