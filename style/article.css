@@ -179,3 +179,11 @@ body {
     margin-left: 10%;
   }
 }
+
+
+
+#categoryButtons .category-button.active {
+  background-color: #F18B7E !important;
+  
+}
+

@@ -8,16 +8,18 @@
   <link rel="icon" type="image/png" href="/images/Buttons.png" />
 
 
-<meta name="description" content="Ontdek handige tips over voeding, veiligheid, verzorging en training van je hond. Leer hoe je je goed voorbereidt op een adoptie en geef je huisdier de beste start.">
+  <meta name="description"
+    content="Ontdek handige tips over voeding, veiligheid, verzorging en training van je hond. Leer hoe je je goed voorbereidt op een adoptie en geef je huisdier de beste start.">
 
 
   <link rel="stylesheet" href="/style/tips.css" />
   <link rel="stylesheet" href="/style/styles.css" />
 
-  <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-      rel="stylesheet"
-    />
+
+  <link rel="stylesheet" href="https://use.typekit.net/yox8cse.css" /><!-- Sirenia -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+    rel="stylesheet" />
   <!-- Google Tag Manager -->
   <script>
     (function (w, d, s, l, i) {
@@ -37,11 +39,13 @@
 <body class="body">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TR2LBFLV" height="0" width="0"
-    style="display: none; visibility: hidden"></iframe></noscript>
+      style="display: none; visibility: hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
   <header class="navbar">
-    <img class="logo" src="/images/felicksLogo.png" alt="Logo van Felicks" />
+    <a href="index.html" aria-label="Terug naar home">
+      <img class="logo" src="/images/felicksLogo.png" alt="Logo van Felicks" />
+    </a>
     <nav class="nav-links hidden" id="nav-links">
       <a href="/index.html#How">Hoe</a>
       <a href="/index.html#ForWho">Voor wie</a>
@@ -53,46 +57,46 @@
   </header>
 
   <section class="tips">
-  <section id="categoryButtons" class="category-buttons">
-    <button class="category-button" data-category="voeding">Voeding</button>
-    <button class="category-button" data-category="veiligheid">Veiligheid</button>
-    <button class="category-button" data-category="training">Training</button>
-    <button class="category-button" data-category="verzorging">Verzorging</button>
-    <button class="category-button" data-category="activiteit">Activiteit</button>
-  </section>
+    <section id="categoryButtons" class="category-buttons">
+      <button class="category-button" data-category="voeding">Voeding</button>
+      <button class="category-button" data-category="veiligheid">Veiligheid</button>
+      <button class="category-button" data-category="training">Training</button>
+      <button class="category-button" data-category="verzorging">Verzorging</button>
+      <button class="category-button" data-category="activiteit">Activiteit</button>
+    </section>
 
 
-  <h2 class="section-title">Aanbevolen artikels:</h2>
+    <h2 class="section-title">Aanbevolen artikels:</h2>
 
 
-  <section id="articlesList" class="articles-list"></section>
+    <section id="articlesList" class="articles-list"></section>
 
-  <template id="articleTemplate">
-    <article class="article-card">
-      
-      <div class="image-wrapper">
-        <img src="" alt="" class="article-image" />
-        <p class="tag mobile-only"></p> <!-- Alleen voor mobiel -->
-      </div>
-      
-      <div class="article-content">
-        <h3></h3>
-        
-        <p class="summary"></p>
-        
-        <div class="bottom-row">
-          <p class="tag tablet-only"></p> <!-- Alleen voor tablet -->
-          <a href="#" class="read-more">Lees het artikel hier</a>
+    <template id="articleTemplate">
+      <article class="article-card">
+
+        <div class="image-wrapper">
+          <img src="" alt="" class="article-image" />
+          <p class="tag mobile-only"></p> <!-- Alleen voor mobiel -->
         </div>
 
-      </div>
-    </article>
-  </template>
+        <div class="article-content">
+          <h3></h3>
+
+          <p class="summary"></p>
+
+          <div class="bottom-row">
+            <p class="tag tablet-only"></p> <!-- Alleen voor tablet -->
+            <a href="#" class="read-more">Lees het artikel hier</a>
+          </div>
+
+        </div>
+      </article>
+    </template>
 
 
 
 
-</section>
+  </section>
 
 
   <footer class="footer">

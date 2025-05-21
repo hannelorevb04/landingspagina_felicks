@@ -2,25 +2,37 @@
 const STRAPI_URL = 'https://landingspagina-felicks.onrender.com'; 
 
 
+const params = new URLSearchParams(window.location.search);
+let activeCategory = params.get('category');  // bijv. "veiligheid" of null
+
+
 const categoryButtons = document.getElementById('categoryButtons');
 const articlesList = document.getElementById('articlesList');
 const articleTemplate = document.getElementById('articleTemplate');
 
 
-let activeCategory = null;
+
 let categories = [];
 let articles = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  fetchArticles(); 
 
+  fetchArticles(activeCategory);
+
+  // markeer meteen de knop als een category vanuit URL bestaat
+  if (activeCategory) {
+    const btn = document.querySelector(`.category-button[data-category="${activeCategory}"]`);
+    if (btn) btn.classList.add('active');
+  }
+
+  // je bestaande click‐handlers blijven ongewijzigd
   const buttons = document.querySelectorAll('.category-button');
   buttons.forEach(button => {
     button.addEventListener('click', () => {
       const category = button.dataset.category;
       if (activeCategory === category) {
         activeCategory = null;
-        fetchArticles(); // alles tonen
+        fetchArticles();
       } else {
         activeCategory = category;
         fetchArticles(category);
@@ -32,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
 
 async function fetchArticles(categorySlug = null) {
   try {

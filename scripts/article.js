@@ -30,6 +30,8 @@ async function loadArticle() {
     return;
   }
 
+
+
   try {
     const res = await fetch(`${STRAPI_URL}/api/articles?filters[slug][$eq]=${slug}&populate=*`);
     const data = await res.json();
@@ -41,30 +43,44 @@ async function loadArticle() {
     }
 
     const articleData = data.data[0];
-    const article = articleData.attributes || articleData; // fallback if no attributes
+    const article = articleData.attributes || articleData; 
+
+    const activeSlug = article.category.slug;
+    //console.log("actieve slug:", activeSlug);
+
+
+    document
+      .querySelectorAll('#categoryButtons .category-button')
+      .forEach(btn => {
+        btn.classList.toggle(
+          'active',
+          btn.dataset.category === activeSlug
+        );
+      }); // zorgt voor aanduiding actieve categorie
+
 
     titleEl.textContent = article.title || "Geen titel";
     summaryEl.textContent = article.summary || "Geen samenvatting";
 
-    
+
 
     console.log("🧪 Afbeeldingsdata = ", article.image);
 
     // Afbeelding
-let imageUrl = "/images/fallback.jpg";
-let imageAlt = article.title || "Artikel";
+    let imageUrl = "/images/fallback.jpg";
+    let imageAlt = article.title || "Artikel";
 
-if (Array.isArray(article.image) && article.image.length > 0 && article.image[0]?.url) {
-  imageUrl = `${STRAPI_URL}${article.image[0].url}`;
-  imageAlt = article.image[0].alternativeText || imageAlt;
-}
+    if (Array.isArray(article.image) && article.image.length > 0 && article.image[0]?.url) {
+      imageUrl = `${STRAPI_URL}${article.image[0].url}`;
+      imageAlt = article.image[0].alternativeText || imageAlt;
+    }
 
-imageEl.src = imageUrl;
-imageEl.alt = imageAlt;
+    imageEl.src = imageUrl;
+    imageEl.alt = imageAlt;
 
-    
-    
-    
+
+
+
 
     if (Array.isArray(article.description)) {
       descEl.innerHTML = article.description.map(block => {
@@ -85,12 +101,27 @@ imageEl.alt = imageAlt;
     const category = article.category?.data?.attributes?.name;
     if (category) renderCategories(category);
 
+
+    document
+      .querySelectorAll('#categoryButtons .category-button')
+      .forEach(btn => {
+        btn.addEventListener('click', () => {
+        
+          const catSlug = btn.getAttribute('data-category');
+         
+          window.location.href = `/tips.html?category=${encodeURIComponent(catSlug)}`;
+        });
+      }); // zorgt voor klikbaarheid andere categorieen
+
+
+
+
   } catch (error) {
     console.error("Fout bij laden artikel:", error);
     titleEl.textContent = "Er ging iets mis bij het ophalen van het artikel.";
   }
 
-  
+
 }
 
 document.addEventListener("DOMContentLoaded", loadArticle);
