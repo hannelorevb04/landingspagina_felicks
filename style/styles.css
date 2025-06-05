@@ -19,12 +19,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 22px 18px;
-  z-index: 999;
+  padding: 22px 24px;
+  z-index: 9999;
 }
 
 .logo {
+  display: block;   
   height: 2rem;
+  width: auto;      
+  margin: 0;      
+  padding: 0;  
 }
 
 .nav-links {
@@ -78,7 +82,7 @@ body {
 }
 
 .hamburger {
-  height: 24px;
+  height: 30px;
   cursor: pointer;
 
 }
@@ -828,7 +832,7 @@ body {
 
   .section#Download .section-image {
     flex: 1;
-    min-width: 25%;
+    min-width: 35%;
     width: 100%;
     align-self: flex-end;
   }
