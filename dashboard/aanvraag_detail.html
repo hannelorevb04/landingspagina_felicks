@@ -126,62 +126,68 @@
 
     <div class="container">
       <div id="dog-image"></div>
-      <div class="info-block"><strong>Hond:</strong> Charlie</div>
       <div class="info-block">
-        <strong>Aanvrager:</strong> test117@breed.com
+        <strong>Hond:</strong> <span id="dog-name"></span>
+      </div>
+      <div class="info-block">
+        <strong>Aanvrager:</strong> <span id="user-email"></span>
       </div>
       <div class="info-block">
         <strong>Status:</strong>
-        <select
-          class="styled-select"
-          id="status-select"
-          onchange="updateLabel()"
-        >
-          <option value="goedgekeurd">Goedgekeurd</option>
-          <option value="in_behandeling">In behandeling</option>
-          <option value="afgewezen">Afgewezen</option>
-        </select>
-        <span class="status-label" id="status-label">In behandeling</span>
+        <select class="styled-select" id="status-select"></select>
+        <span class="status-label" id="status-label"></span>
       </div>
       <div class="info-block">
-        <strong>Bericht:</strong> Ik zou deze hond graag adopteren. Kunnen
-        jullie mij contacteren?
+        <strong>Bericht:</strong> <span id="user-message"></span>
       </div>
 
       <h2>Adoptieprofiel</h2>
       <div class="profiel-item">
-        <strong>Leefsituatie:</strong> natuur / landelijke omgeving
-      </div>
-      <div class="profiel-item"><strong>Ervaring:</strong> enige ervaring</div>
-      <div class="profiel-item">
-        <strong>Activiteitsniveau:</strong> gemiddeld actief
+        <strong>Leefsituatie:</strong>
+        <span class="antwoord">Natuur / Landelijke Omgeving</span>
       </div>
       <div class="profiel-item">
-        <strong>Thuisfrequentie:</strong> vaak van huis
+        <strong>Ervaring:</strong> <span class="antwoord">Enige Ervaring</span>
       </div>
       <div class="profiel-item">
-        <strong>Voorkeursgrootte:</strong> middelgrote hond
+        <strong>Activiteitsniveau:</strong>
+        <span class="antwoord">Gemiddeld Actief</span>
       </div>
       <div class="profiel-item">
-        <strong>Kinderen in huis:</strong> jonge kinderen
+        <strong>Thuisfrequentie:</strong>
+        <span class="antwoord">Vaak Van Huis</span>
       </div>
       <div class="profiel-item">
-        <strong>Andere huisdieren:</strong> al een hond
+        <strong>Voorkeursgrootte:</strong>
+        <span class="antwoord">Middelgrote Hond</span>
       </div>
       <div class="profiel-item">
-        <strong>Persoonlijkheid:</strong> speelkameraadje
+        <strong>Kinderen in huis:</strong>
+        <span class="antwoord">Jonge Kinderen</span>
       </div>
       <div class="profiel-item">
-        <strong>Blaffen:</strong> praatgraag / vocaal
+        <strong>Andere huisdieren:</strong>
+        <span class="antwoord">Al Een Hond</span>
       </div>
       <div class="profiel-item">
-        <strong>Trainbaarheid:</strong> zelfstandig leervermogen
+        <strong>Persoonlijkheid:</strong>
+        <span class="antwoord">Speelkameraadje</span>
       </div>
       <div class="profiel-item">
-        <strong>Vachtverzorging:</strong> minimale verzorging nodig
+        <strong>Blaffen:</strong>
+        <span class="antwoord">Praatgraag / Vocaal</span>
       </div>
       <div class="profiel-item">
-        <strong>Haarverlies:</strong> geen haarverlies
+        <strong>Trainbaarheid:</strong>
+        <span class="antwoord">Zelfstandig Leervermogen</span>
+      </div>
+      <div class="profiel-item">
+        <strong>Vachtverzorging:</strong>
+        <span class="antwoord">Minimale Verzorging Nodig</span>
+      </div>
+      <div class="profiel-item">
+        <strong>Haarverlies:</strong>
+        <span class="antwoord">Geen Haarverlies</span>
       </div>
     </div>
 
@@ -194,19 +200,18 @@
 
       const id = new URLSearchParams(window.location.search).get("id");
 
-      function updateLabel() {
+      async function loadStatus() {
         const select = document.getElementById("status-select");
         const label = document.getElementById("status-label");
-        const value = select.value;
-        label.textContent = select.options[select.selectedIndex].text;
-        label.className = "status-label status-" + value;
-      }
 
-      window.onload = async () => {
-        updateLabel();
-
-        const select = document.getElementById("status-select");
-        const label = document.getElementById("status-label");
+        ["goedgekeurd", "in_behandeling", "afgewezen"].forEach((val) => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val
+            .replace("_", " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase());
+          select.appendChild(opt);
+        });
 
         const { data, error } = await supabase
           .from("adoption_requests")
@@ -214,53 +219,61 @@
           .eq("id", id)
           .single();
 
-        if (!error && data && data.status) {
+        if (data?.status) {
           select.value = data.status;
-          label.textContent = select.options[select.selectedIndex].text;
-          label.className = "status-label status-" + data.status;
+          updateStatusLabel(data.status);
         }
 
         select.addEventListener("change", async (e) => {
-          const newStatus = e.target.value;
+          const selectedStatus = e.target.value;
           const { error } = await supabase
             .from("adoption_requests")
-            .update({ status: newStatus })
+            .update({ status: selectedStatus })
             .eq("id", id);
-          if (error)
-            console.error("Fout bij updaten van status:", error.message);
-          updateLabel();
-        });
 
-        // hoofdletter toevoegen aan alle profiel-antwoorden
-        document.querySelectorAll(".profiel-item").forEach((item) => {
-          const parts = item.innerHTML.split("</strong>");
-          if (parts.length === 2) {
-            const cleaned = parts[1].trim();
-            const capitalized =
-              cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
-            item.innerHTML = parts[0] + "</strong> " + capitalized;
-          }
+          if (!error) updateStatusLabel(selectedStatus);
+          else console.error("Update error:", error);
         });
-      };
+      }
 
-      async function loadImage() {
-        const { data, error } = await supabase
+      function updateStatusLabel(status) {
+        const label = document.getElementById("status-label");
+        const displayText = document.querySelector(
+          `#status-select option[value="${status}"]`
+        ).textContent;
+        label.textContent = displayText;
+        label.className = "status-label status-" + status;
+      }
+
+      async function loadData() {
+        const { data: requestData } = await supabase
           .from("requests_with_user_and_dog")
-          .select("images")
+          .select("dog_name, user_email, message, images")
           .eq("id", id)
           .single();
 
-        if (error || !data || !data.images || data.images.length === 0) return;
+        if (requestData) {
+          document.getElementById("dog-name").textContent =
+            requestData.dog_name;
+          document.getElementById("user-email").textContent =
+            requestData.user_email;
+          document.getElementById("user-message").textContent =
+            requestData.message;
 
-        const img = document.createElement("img");
-        img.src = data.images[0];
-        img.alt = "Hondfoto";
-        img.className = "dog-photo";
-
-        document.getElementById("dog-image").appendChild(img);
+          if (requestData.images?.length > 0) {
+            const img = document.createElement("img");
+            img.src = requestData.images[0];
+            img.alt = "Hondfoto";
+            img.className = "dog-photo";
+            document.getElementById("dog-image").appendChild(img);
+          }
+        }
       }
 
-      loadImage();
+      window.onload = async () => {
+        await loadStatus();
+        await loadData();
+      };
     </script>
   </body>
 </html>
