@@ -1,0 +1,117 @@
+<!-- Bestand: dashboard.html -->
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – Aanvragen per Hond</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f7f7f7;
+        padding: 2rem;
+      }
+      .dog-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+      }
+      .dog-card h2 {
+        margin-top: 0;
+        color: #3a3a3a;
+      }
+      .dog-img {
+        width: 100%;
+        max-height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+      }
+      .request-item {
+        background: #f0f4ff;
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        margin: 0.5rem 0;
+      }
+      .status {
+        font-weight: bold;
+        background: #dfe8ff;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        display: inline-block;
+        margin-left: 0.5rem;
+      }
+      .request-item:hover {
+        background: #e7efff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Overzicht Adoptieaanvragen per Hond</h1>
+    <div id="dashboard">Aan het laden...</div>
+
+    <script>
+      const supabase = window.supabase.createClient(
+        "https://vgbuoxdfrbzqbqltcelz.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnYnVveGRmcmJ6cWJxbHRjZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTgyMzQsImV4cCI6MjA1NjU5NDIzNH0.JJdiJGHZS1yhVP_hnFAdve-VGfNBK5LmiBSMICSdkbk"
+      );
+
+      async function loadDashboard() {
+        const container = document.getElementById("dashboard");
+        const { data, error } = await supabase
+          .from("requests_with_user_and_dog")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error || !data) {
+          container.innerHTML =
+            "<p style='color:red;'>Fout bij laden van aanvragen.</p>";
+          return;
+        }
+
+        const grouped = {};
+        data.forEach((req) => {
+          const dogId = req.dog_id;
+          if (!grouped[dogId]) {
+            grouped[dogId] = {
+              name: req.dog_name,
+              image: req.images?.[0] ?? null,
+              requests: [],
+            };
+          }
+          grouped[dogId].requests.push(req);
+        });
+
+        container.innerHTML = "";
+
+        Object.entries(grouped).forEach(([dogId, dog]) => {
+          const div = document.createElement("div");
+          div.className = "dog-card";
+          div.innerHTML = `
+            ${dog.image ? `<img src="${dog.image}" class="dog-img" />` : ""}
+            <h2>${dog.name}</h2>
+            ${dog.requests
+              .map(
+                (r) => `
+              <div class="request-item" onclick="window.location='adoptieaanvraag.html?id=${
+                r.id
+              }'">
+                📧 ${r.user_email} <span class="status">${r.status}</span><br/>
+                🕓 ${new Date(r.created_at).toLocaleString()}
+              </div>
+            `
+              )
+              .join("")}
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>

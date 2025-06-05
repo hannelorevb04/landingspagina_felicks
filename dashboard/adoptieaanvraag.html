@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adoptieaanvraag detail</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+      :root {
+        --primary: #4e73df;
+        --light-bg: #f9f9f9;
+        --card-bg: #ffffff;
+        --border-radius: 12px;
+        --shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--light-bg);
+        padding: 2rem;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      img.dog-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: var(--border-radius);
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      .section {
+        margin-top: 2rem;
+      }
+
+      .section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+        border-bottom: 2px solid var(--primary);
+        display: inline-block;
+        padding-bottom: 0.2rem;
+      }
+
+      .info-list {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .info-item {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .label {
+        font-weight: 600;
+        color: #444;
+      }
+
+      .value {
+        color: #333;
+      }
+
+      .status-badge {
+        display: inline-block;
+        background-color: #eaf0ff;
+        color: var(--primary);
+        padding: 0.4rem 0.7rem;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-top: 0.4rem;
+      }
+
+      @media (max-width: 600px) {
+        .info-item {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="content">Aan het laden...</div>
+    </div>
+
+    <script>
+      const supabase = window.supabase.createClient(
+        "https://vgbuoxdfrbzqbqltcelz.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnYnVveGRmcmJ6cWJxbHRjZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTgyMzQsImV4cCI6MjA1NjU5NDIzNH0.JJdiJGHZS1yhVP_hnFAdve-VGfNBK5LmiBSMICSdkbk"
+      );
+
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get("id");
+
+      async function loadDetails() {
+        const content = document.getElementById("content");
+
+        const { data: request } = await supabase
+          .from("requests_with_user_and_dog")
+          .select("*")
+          .eq("id", requestId)
+          .maybeSingle();
+
+        if (!request) {
+          content.innerHTML =
+            "<p style='color:red;'>Aanvraag niet gevonden.</p>";
+          return;
+        }
+
+        const { data: profileData } = await supabase
+          .from("adoption_profiles")
+          .select("*")
+          .eq("user_id", request.user_id)
+          .maybeSingle();
+
+        const imageUrl = request.images?.[0] ?? null;
+
+        content.innerHTML = `
+          ${
+            imageUrl
+              ? `<img src="${imageUrl}" alt="Hond" class="dog-image" />`
+              : `<div style="height:300px;background:#eee;border-radius:12px;display:flex;align-items:center;justify-content:center;">Geen foto</div>`
+          }
+
+          <h1>${request.dog_name}</h1>
+          <p><strong>ID hond:</strong> ${request.dog_uuid}</p>
+
+          <div class="section">
+            <h2>Aanvraaginformatie</h2>
+            <div class="info-list">
+              <div class="info-item"><span class="label">Aanvrager:</span><span class="value">${
+                request.user_email
+              }</span></div>
+              <div class="info-item"><span class="label">Bericht:</span><span class="value">${
+                request.message || "Geen bericht meegestuurd."
+              }</span></div>
+              <div class="info-item"><span class="label">Status:</span><span class="status-badge">${
+                request.status
+              }</span></div>
+              <div class="info-item"><span class="label">Ingediend op:</span><span class="value">${new Date(
+                request.created_at
+              ).toLocaleString()}</span></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Adoptieprofiel</h2>
+            ${
+              profileData
+                ? `
+              <div class="info-list">
+                <div class="info-item"><span class="label">Leefsituatie:</span><span class="value">${profileData.living_situation}</span></div>
+                <div class="info-item"><span class="label">Ervaring:</span><span class="value">${profileData.experience_level}</span></div>
+                <div class="info-item"><span class="label">Activiteit:</span><span class="value">${profileData.activity_level}</span></div>
+                <div class="info-item"><span class="label">Thuisfrequentie:</span><span class="value">${profileData.home_frequency}</span></div>
+                <div class="info-item"><span class="label">Voorkeur grootte:</span><span class="value">${profileData.preferred_size}</span></div>
+                <div class="info-item"><span class="label">Kinderen:</span><span class="value">${profileData.has_children}</span></div>
+                <div class="info-item"><span class="label">Andere huisdieren:</span><span class="value">${profileData.has_pets}</span></div>
+                <div class="info-item"><span class="label">Persoonlijkheid:</span><span class="value">${profileData.personality}</span></div>
+                <div class="info-item"><span class="label">Blaffen:</span><span class="value">${profileData.barking}</span></div>
+                <div class="info-item"><span class="label">Training:</span><span class="value">${profileData.training}</span></div>
+                <div class="info-item"><span class="label">Vachtverzorging:</span><span class="value">${profileData.grooming}</span></div>
+                <div class="info-item"><span class="label">Haarverlies:</span><span class="value">${profileData.shedding}</span></div>
+              </div>
+              `
+                : `<p style="color:gray;">Geen adoptieprofiel gevonden voor deze gebruiker.</p>`
+            }
+          </div>
+        `;
+      }
+
+      window.addEventListener("DOMContentLoaded", loadDetails);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aanvragen per persoon</title>
+    <link rel="stylesheet" href="https://use.typekit.net/wcl0jwk.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Sirinia&display=swap");
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: #fde4d2;
+        padding: 2rem;
+        color: #183a36;
+        margin: 0;
+      }
+      nav {
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+      nav a {
+        margin-right: 1rem;
+        text-decoration: none;
+        color: #183a36;
+        font-weight: bold;
+      }
+      h1 {
+        font-family: "Sirenia", serif;
+        font-weight: 600;
+        font-size: 2.5rem;
+        margin: 0;
+      }
+      .persoon-container {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+      .persoon-blok {
+        background: #fffdf9;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+      }
+      .persoon-header {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+      .aanvraag-item {
+        display: flex;
+        padding: 1rem 0;
+        border-top: 1px solid #eee;
+        gap: 1rem;
+        justify-content: space-between;
+        position: relative;
+      }
+      .aanvraag-item:first-child {
+        border-top: none;
+      }
+      .aanvraag-item .info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+      }
+      .aanvraag-item a {
+        display: block;
+        margin-top: 0.4rem;
+        color: #f18b7e;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .aanvraag-item a:hover {
+        text-decoration: underline;
+      }
+      .status-label {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .status-goedgekeurd {
+        background-color: #97b8a5;
+        color: #183a36;
+      }
+      .status-in_behandeling {
+        background-color: #ffd87e;
+        color: #183a36;
+      }
+      .status-afgewezen {
+        background-color: #f18b7e;
+        color: #183a36;
+      }
+      .hond-foto {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Aanvragen in behandeling</a>
+      <a href="aanvragen_per_hond.html">Per hond</a>
+      <a href="aanvragen_per_persoon.html">Per persoon</a>
+    </nav>
+
+    <div class="persoon-container">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 2rem;
+        "
+      >
+        <h1>Aanvragen per persoon</h1>
+      </div>
+      <div id="container">Laden...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+      const supabase = window.supabase.createClient(
+        "https://vgbuoxdfrbzqbqltcelz.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnYnVveGRmcmJ6cWJxbHRjZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTgyMzQsImV4cCI6MjA1NjU5NDIzNH0.JJdiJGHZS1yhVP_hnFAdve-VGfNBK5LmiBSMICSdkbk"
+      );
+
+      async function load() {
+        const { data, error } = await supabase
+          .from("requests_with_user_and_dog")
+          .select("*")
+          .order("user_email", { ascending: true })
+          .order("created_at", { ascending: false });
+
+        const container = document.getElementById("container");
+        if (error || !data) {
+          container.innerHTML = `<p>Fout: ${error?.message || "geen data"}</p>`;
+          return;
+        }
+
+        const grouped = {};
+        data.forEach((req) => {
+          if (!grouped[req.user_email]) grouped[req.user_email] = [];
+          grouped[req.user_email].push(req);
+        });
+
+        container.innerHTML = Object.entries(grouped)
+          .map(
+            ([email, list]) => `
+          <div class="persoon-blok">
+            <div class="persoon-header">${email}</div>
+            ${list
+              .map((req) => {
+                const img =
+                  req.images && req.images.length > 0 ? req.images[0] : "";
+                return `
+                <div class="aanvraag-item">
+                  <div class="info">
+                    <img src="${img}" alt="${req.dog_name}" class="hond-foto" />
+                    <div>
+                      <strong>${req.dog_name}</strong><br/>
+                      <a href="aanvraag_detail.html?id=${
+                        req.id
+                      }">➔ Bekijk aanvraag</a>
+                    </div>
+                  </div>
+                  <span class="status-label status-${req.status}">
+  ${
+    req.status.replace("_", " ").charAt(0).toUpperCase() +
+    req.status.replace("_", " ").slice(1)
+  }
+</span>
+
+                </div>
+              `;
+              })
+              .join("")}
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      load();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aanvragen in behandeling</title>
+    <link rel="stylesheet" href="https://use.typekit.net/wcl0jwk.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Sirinia&display=swap");
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: #fde4d2;
+        padding: 2rem;
+        color: #183a36;
+        margin: 0;
+      }
+      nav {
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+      nav a {
+        margin-right: 1rem;
+        text-decoration: none;
+        color: #183a36;
+        font-weight: bold;
+      }
+      h1 {
+        font-family: "Sirenia", serif;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+      .aanvraag-list {
+        max-width: 860px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .aanvraag {
+        background: #fffdf9;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .aanvraag-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .status-label {
+        padding: 0.3rem 0.8rem;
+        border-radius: 12px;
+        background-color: #ffd87e;
+        color: #183a36;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .aanvraag a {
+        color: #f18b7e;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .aanvraag a:hover {
+        text-decoration: underline;
+      }
+      .no-data {
+        font-style: italic;
+        color: #777;
+        text-align: center;
+      }
+      .hond-foto {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Aanvragen in behandeling</a>
+      <a href="aanvragen_per_hond.html">Per hond</a>
+      <a href="aanvragen_per_persoon.html">Per persoon</a>
+    </nav>
+
+    <div
+      style="
+        max-width: 860px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+      "
+    >
+      <h1 style="font-size: 2rem; font-family: 'Sirenia', serif; margin: 0">
+        Aanvragen in behandeling
+      </h1>
+    </div>
+    <div id="container" class="aanvraag-list">Laden...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+      const supabase = window.supabase.createClient(
+        "https://vgbuoxdfrbzqbqltcelz.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnYnVveGRmcmJ6cWJxbHRjZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEwMTgyMzQsImV4cCI6MjA1NjU5NDIzNH0.JJdiJGHZS1yhVP_hnFAdve-VGfNBK5LmiBSMICSdkbk"
+      );
+
+      async function load() {
+        const { data, error } = await supabase
+          .from("requests_with_user_and_dog")
+          .select("*")
+          .eq("status", "in_behandeling")
+          .order("created_at", { ascending: false });
+
+        const container = document.getElementById("container");
+        if (error || !data) {
+          container.innerHTML = `<p class="no-data">Fout bij laden van data: ${
+            error?.message || "geen data gevonden."
+          }</p>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          container.innerHTML = `<p class="no-data">Er zijn momenteel geen aanvragen in behandeling.</p>`;
+          return;
+        }
+
+        container.innerHTML = data
+          .map((req) => {
+            const imageArray = req.images || [];
+            const imageUrl = imageArray.length > 0 ? imageArray[0] : "";
+            return `
+              <div class="aanvraag">
+                <img src="${imageUrl}" alt="Foto van ${
+              req.dog_name
+            }" class="hond-foto">
+                <div class="aanvraag-info">
+                  <div class="top-row">
+                    <strong>${req.dog_name}</strong>
+                    <span class="status-label">${req.status.replace(
+                      "_",
+                      " "
+                    )}</span>
+                  </div>
+                  <div><strong>Aanvrager:</strong> ${req.user_email}</div>
+                  <div><strong>Datum:</strong> ${new Date(
+                    req.created_at
+                  ).toLocaleString()}</div>
+                  <a href="aanvraag_detail.html?id=${
+                    req.id
+                  }">➔ Bekijk aanvraag</a>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      load();
+    </script>
+  </body>
+</html>
