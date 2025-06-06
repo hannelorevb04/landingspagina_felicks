@@ -144,50 +144,50 @@
       <h2>Adoptieprofiel</h2>
       <div class="profiel-item">
         <strong>Leefsituatie:</strong>
-        <span class="antwoord">Natuur / Landelijke Omgeving</span>
+        <span class="antwoord" id="living_situation"></span>
       </div>
       <div class="profiel-item">
-        <strong>Ervaring:</strong> <span class="antwoord">Enige Ervaring</span>
+        <strong>Ervaring:</strong>
+        <span class="antwoord" id="experience_level"></span>
       </div>
       <div class="profiel-item">
         <strong>Activiteitsniveau:</strong>
-        <span class="antwoord">Gemiddeld Actief</span>
+        <span class="antwoord" id="activity_level"></span>
       </div>
       <div class="profiel-item">
         <strong>Thuisfrequentie:</strong>
-        <span class="antwoord">Vaak Van Huis</span>
+        <span class="antwoord" id="home_frequency"></span>
       </div>
       <div class="profiel-item">
         <strong>Voorkeursgrootte:</strong>
-        <span class="antwoord">Middelgrote Hond</span>
+        <span class="antwoord" id="preferred_size"></span>
       </div>
       <div class="profiel-item">
         <strong>Kinderen in huis:</strong>
-        <span class="antwoord">Jonge Kinderen</span>
+        <span class="antwoord" id="has_children"></span>
       </div>
       <div class="profiel-item">
         <strong>Andere huisdieren:</strong>
-        <span class="antwoord">Al Een Hond</span>
+        <span class="antwoord" id="has_pets"></span>
       </div>
       <div class="profiel-item">
         <strong>Persoonlijkheid:</strong>
-        <span class="antwoord">Speelkameraadje</span>
+        <span class="antwoord" id="personality"></span>
       </div>
       <div class="profiel-item">
-        <strong>Blaffen:</strong>
-        <span class="antwoord">Praatgraag / Vocaal</span>
+        <strong>Blaffen:</strong> <span class="antwoord" id="barking"></span>
       </div>
       <div class="profiel-item">
         <strong>Trainbaarheid:</strong>
-        <span class="antwoord">Zelfstandig Leervermogen</span>
+        <span class="antwoord" id="training"></span>
       </div>
       <div class="profiel-item">
         <strong>Vachtverzorging:</strong>
-        <span class="antwoord">Minimale Verzorging Nodig</span>
+        <span class="antwoord" id="grooming"></span>
       </div>
       <div class="profiel-item">
         <strong>Haarverlies:</strong>
-        <span class="antwoord">Geen Haarverlies</span>
+        <span class="antwoord" id="shedding"></span>
       </div>
     </div>
 
@@ -199,6 +199,7 @@
       );
 
       const id = new URLSearchParams(window.location.search).get("id");
+      let userId = null;
 
       async function loadStatus() {
         const select = document.getElementById("status-select");
@@ -245,14 +246,102 @@
         label.className = "status-label status-" + status;
       }
 
+      async function loadAdoptionProfile() {
+        if (!userId) return;
+
+        const { data: profile } = await supabase
+          .from("adoption_profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .single();
+
+        if (!profile) return;
+
+        const mapping = {
+          living_situation: {
+            garden: "We hebben een tuin waar de hond lekker kan snuffelen",
+            apartment: "In een gezellig appartement – knus en compact",
+            no_garden:
+              "Een huis zonder tuin, maar met veel wandelopties in de buurt",
+            rural:
+              "Veel ruimte, veel natuur – buiten zijn is bij ons vanzelfsprekend",
+          },
+          home_frequency: {
+            always_home:
+              "Bijna altijd, ik werk van thuis uit of ben vaak thuis",
+            mixed: "Gedeeld – soms thuis, soms weg",
+            mostly_away:
+              "Vaak van huis – mijn hond moet goed alleen kunnen zijn",
+          },
+          experience_level: {
+            none: "Ik heb nog geen ervaring met honden",
+            some: "Ik heb al eens een hond gehad of ken er veel over",
+            expert: "Honden zijn altijd al deel van mijn leven geweest",
+          },
+          preferred_size: {
+            small: "Klein en compact – makkelijk mee te nemen",
+            medium: "Middelgroot – ideaal voor thuis én onderweg",
+            large: "Groot en imposant – ik hou van honden met aanwezigheid",
+          },
+          has_children: {
+            none: "Nee, er zijn geen kinderen in huis",
+            teens: "Ja, met tieners of oudere kinderen",
+            young: "Ja, met jonge kinderen",
+          },
+          has_pets: {
+            none: "Nee, dit wordt ons eerste huisdier",
+            other_pets: "Ja, katten of andere dieren",
+            first_pet: "Nee, dit wordt ons eerste huisdier",
+            dogs: "Ja, één of meerdere honden",
+          },
+          personality: {
+            calm: "Gezelligheid en rust – een trouwe metgezel in huis",
+            playmate: "Een vrolijk maatje voor wandelingen en spel",
+            guardian: "Een loyale hond die ook goed waakt als dat nodig is",
+            smart: "Een slimme hond om mee te trainen en dingen aan te leren",
+          },
+          barking: {
+            quiet: "Liever zo stil mogelijk",
+            some: "Een beetje blaffen hoort erbij",
+            vocal: "Een praatgrage hond is geen probleem",
+          },
+          training: {
+            very_important:
+              "Heel belangrijk – ik wil een hond die snel leert en goed luistert",
+            important:
+              "Belangrijk, maar het hoeft geen perfect gehoorzame hond te zijn",
+            independent:
+              "Niet zo belangrijk – ik waardeer een zelfstandige hond",
+          },
+          grooming: {
+            minimal: "Minimale verzorging nodig",
+            occasional: "Af en toe borstelen of wassen is prima",
+            daily: "Dagelijkse verzorging is geen probleem",
+          },
+          shedding: {
+            no_hair: "Geen haarverlies",
+            little: "Een beetje haarverlies is oké",
+            a_lot: "Ik heb geen probleem met veel haarverlies",
+          },
+        };
+
+        // Zet de juiste zinnen op de pagina
+        Object.entries(profile).forEach(([key, value]) => {
+          const el = document.getElementById(key);
+          if (el && value && mapping[key] && mapping[key][value]) {
+            el.textContent = mapping[key][value];
+          }
+        });
+      }
       async function loadData() {
         const { data: requestData } = await supabase
           .from("requests_with_user_and_dog")
-          .select("dog_name, user_email, message, images")
+          .select("dog_name, user_email, message, images, user_id")
           .eq("id", id)
           .single();
 
         if (requestData) {
+          userId = requestData.user_id;
           document.getElementById("dog-name").textContent =
             requestData.dog_name;
           document.getElementById("user-email").textContent =
@@ -267,6 +356,8 @@
             img.className = "dog-photo";
             document.getElementById("dog-image").appendChild(img);
           }
+
+          await loadAdoptionProfile();
         }
       }
 
