@@ -188,6 +188,7 @@ body {
 }
 .description-content p {
   margin-bottom: 1.5rem;   /* meer ruimte onder elke paragraaf */
+  font-weight: 600;
 }
 
 .description-content ul {
