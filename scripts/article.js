@@ -35,6 +35,7 @@ async function loadArticle() {
   try {
     const res = await fetch(`${STRAPI_URL}/api/articles?filters[slug][$eq]=${slug}&populate=*`);
     const data = await res.json();
+
     console.log("🔎 ARTIKELDATA:", data);
 
     if (!data.data || data.data.length === 0) {
@@ -80,23 +81,71 @@ async function loadArticle() {
 
 
 
+// In je loadArticle(), bij description-parsing:
 
+if (Array.isArray(article.description)) {
+  let html   = "";
+  let inList = false;
 
-    if (Array.isArray(article.description)) {
-      descEl.innerHTML = article.description.map(block => {
-        if (block.type === "paragraph") {
-          return `<p>${block.children.map(child => child.text).join("")}</p>`;
-        }
-        if (block.type === "list") {
-          const items = block.children.map(item =>
-            `<li>${item.children.map(c => c.text).join("")}</li>`).join("");
-          return `<ul>${items}</ul>`;
-        }
-        return "";
+  article.description.forEach(block => {
+    // 1) Paragraaf
+    if (block.type === "paragraph") {
+      if (inList) {
+        html   += "</ul>";
+        inList = false;
+      }
+      // Bouw de inline children, respect bold / italic
+      const inline = (block.children || []).map(c => {
+        let text = c.text || "";
+        if (c.bold)   text = `<strong>${text}</strong>`;
+        if (c.italic) text = `<em>${text}</em>`;
+        return text;
       }).join("");
-    } else {
-      descEl.innerHTML = article.description || "<p>Geen beschrijving beschikbaar.</p>";
+      html += `<p>${inline}</p>`;
     }
+
+    // 2) Unordered List (Strapi 'list' block)
+    else if (block.type === "list") {
+      if (!inList) {
+        html   += "<ul>";
+        inList = true;
+      }
+      block.children.forEach(item => {
+        // elk item is een list-item
+        const itemHtml = (item.children || []).map(c => {
+          let t = c.text || "";
+          if (c.bold)   t = `<strong>${t}</strong>`;
+          if (c.italic) t = `<em>${t}</em>`;
+          return t;
+        }).join("");
+        html += `<li>${itemHtml}</li>`;
+      });
+    }
+
+    // 3) Optioneel: losse list-item blokken
+    else if (block.type === "list-item") {
+      if (!inList) {
+        html   += "<ul>";
+        inList = true;
+      }
+      const itemHtml = (block.children || []).map(c => {
+        let t = c.text || "";
+        if (c.bold)   t = `<strong>${t}</strong>`;
+        if (c.italic) t = `<em>${t}</em>`;
+        return t;
+      }).join("");
+      html += `<li>${itemHtml}</li>`;
+    }
+  });
+
+  if (inList) html += "</ul>";
+  descEl.innerHTML = html;
+}
+else {
+  descEl.innerHTML = article.description || "<p>Geen beschrijving beschikbaar.</p>";
+}
+
+
 
     const category = article.category?.data?.attributes?.name;
     if (category) renderCategories(category);

@@ -186,5 +186,18 @@ body {
   background-color: #F18B7E !important;
   
 }
+.description-content p {
+  margin-bottom: 1.5rem;   /* meer ruimte onder elke paragraaf */
+}
 
+.description-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 1.5rem 0; 
+  margin-bottom: 3rem;       /* ruimte boven + onder de lijst */
+}
+
+.description-content li {
+  margin-bottom: 0.75rem;  /* ruimte tussen lijstitems */
+}
 
