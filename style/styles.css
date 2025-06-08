@@ -525,8 +525,8 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  flex: 1 1 50%;
-  gap: 30%;
+  flex: 1 1 45%;
+  gap: 20%;
 
 }
 

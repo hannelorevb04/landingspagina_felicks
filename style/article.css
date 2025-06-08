@@ -187,7 +187,7 @@ body {
   
 }
 .description-content p {
-  margin-bottom: 1.5rem;   /* meer ruimte onder elke paragraaf */
+  margin-bottom: 1.5rem;  
   font-weight: 600;
 }
 
@@ -195,10 +195,10 @@ body {
   list-style: disc;
   padding-left: 1.5rem;
   margin: 1.5rem 0; 
-  margin-bottom: 3rem;       /* ruimte boven + onder de lijst */
+  margin-bottom: 3rem;    
 }
 
 .description-content li {
-  margin-bottom: 0.75rem;  /* ruimte tussen lijstitems */
+  margin-bottom: 0.75rem;  
 }
 
